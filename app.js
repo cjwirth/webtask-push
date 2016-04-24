@@ -23,10 +23,16 @@ app.post('/', function (req, res) {
     // `cert` and `key` must be uploaded on creation to the secrets
     var cert = req.webtaskContext.secrets.cert;
     var key = req.webtaskContext.secrets.key;
+    var environment = req.webtaskContext.secrets.environment;
     if (!cert || !key) {
         res.status(500).json({ error: 'Invalid Credentials' }); 
         return;
     }
+    var host = 'gateway.sandbox.push.apple.com';
+    if (environment == "production") {
+        host = 'gateway.push.apple.com';
+    }
+
     var params = req.body;
 
     // A push notification requires a destination, otherwise we cannot send it
@@ -44,7 +50,7 @@ app.post('/', function (req, res) {
 
     // Submit the data to Apple's servers
     // Retuns an error if something goes wrong with the request.
-    sendNotification(note, cert, key, function(success, error) {
+    sendNotification(note, host, cert, key, function(success, error) {
         var result = { success: success };
         if (success) {
             res.json(result);
@@ -65,6 +71,7 @@ module.exports = Webtask.fromExpress(app);
  * Opens a socket and sends data to Apple's server.
  *
  * @param {Notification} note - The notification to send to Apple
+ * @param {string} host - Host to connect to - Apple's Sandbox or Production APNS server
  * @param {string} cert - Certificate provided by Apple
  * @param {string} key - Key provided by Apple
  * @param {function} callback - Callback to be called when the call is complete.
@@ -75,11 +82,11 @@ module.exports = Webtask.fromExpress(app);
  *                              Success is a boolean signifying whether the connection succeeded
  *                              Error will be the error that occurred if it failed
  */
-function sendNotification(note, cert, key, callback) {
+function sendNotification(note, host, cert, key, callback) {
     var options = {
         cert: cert,
         key: key,
-        host: 'gateway.sandbox.push.apple.com',
+        host: host,
         port: 2195
     };
 

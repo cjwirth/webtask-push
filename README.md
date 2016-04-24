@@ -21,6 +21,8 @@ All you have to do is create a new webtask, passing in your certificate and key 
 $ wt create app.js --name push --no-parse --no-merge --secret cert="$(cat cert.pem)" --secret key="$(cat key.pem)"
 ~~~
 
+By default, webtask-push will use the _sandbox_ APNS server. If you want to use the _production_ server, you will also need to pass in `--secret environment=production` when you create the webtask.
+
 *Make sure you include the `cert` and `key` in your secret as well as `--no-parse` and `--no-merge`, because Express is being used inside!*
 
 ## Use
