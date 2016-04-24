@@ -84,6 +84,14 @@ This would get parsed, and sent to Apple. The resulting information you would re
 
 **payload** - JSON Object that contains any other data that you want to send along with the notification. All the data inside here will be at the same level as the `aps` object in the data received in your iOS app.
 
+## TODO
+
+Right now, webtask-push is a very simple one-off send-a-push webtask, but it could definitely be made better.
+
+Probably the most glaring issue is security. Since it's just an open endpoint, there's nothing that prevents someone from sending a whole bunch of requests with device tokens and spamming all your users.
+
+Another thing that could be improved is to send to multiple devices.
+
 ## License
 
 webtask-push is released under the MIT License. See [LICENSE.md](./LICENSE.md) for details.
